@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
+app.use(cors());
 app.use(express.json()); // To parse JSON body in POST/PUT requests
 const PORT = 5000;
 
@@ -104,3 +106,58 @@ app.delete('/students/:id', async (req, res) => {
   }
 });
 
+// CREATE - Add a new student
+app.post('/students', async (req, res) => {
+  try {
+    const { name, email, course, year } = req.body;
+
+    const newStudent = new Student({
+      name,
+      email,
+      course,
+      year
+    });
+
+    await newStudent.save();
+    res.status(201).json({ message: "Student added successfully!", student: newStudent });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error adding student" });
+  }
+});
+
+
+// Update a student (PUT)
+app.put('/students/:id', async (req, res) => {
+  try {
+    const student = await Student.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    if (!student) return res.status(404).json({ error: "Student not found" });
+
+    res.json({
+      message: "Student updated successfully!",
+      updatedStudent: student
+    });
+  } catch (err) {
+    console.log("Update Error:", err);
+    res.status(400).json({ error: "Error updating student" });
+  }
+});
+
+
+
+// Delete a student (DELETE)
+app.delete('/students/:id', async (req, res) => {
+  try {
+    const student = await Student.findByIdAndDelete(req.params.id);
+    if (!student) return res.status(404).json({ error: "Student not found" });
+    res.json({ message: "Student deleted successfully" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Error deleting student" });
+  }
+});
