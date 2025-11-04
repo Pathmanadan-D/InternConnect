@@ -8,8 +8,8 @@ function App() {
   return (
     <Router>
       <div style={{ padding: "20px" }}>
-      <h1 className="text-3xl font-bold text-blue-600">
-      InternConnect Frontend
+      <h1 className="text-4xl font-bold text-blue-500 text-center mt-10">
+      Tailwind is working! 🚀
       </h1>
         <Routes>
           <Route path="/" element={<StudentList />} />

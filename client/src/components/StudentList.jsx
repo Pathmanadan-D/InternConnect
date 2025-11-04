@@ -17,6 +17,8 @@ function StudentList() {
         console.error("Error fetching students:", error);
       });
   }, []);
+
+  
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this student?")) {
       axios
