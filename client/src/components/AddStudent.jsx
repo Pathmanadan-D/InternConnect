@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
+
 
 function AddStudent() {
   const [formData, setFormData] = useState({
@@ -19,7 +20,7 @@ function AddStudent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/students", formData);
+      const res = await axios.post("/students", formData);
       console.log("Student added:", res.data);
       alert("Student added successfully!");
       setFormData({ name: "", email: "", course: "", year: "" });
