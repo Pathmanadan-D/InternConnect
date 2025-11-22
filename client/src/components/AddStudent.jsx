@@ -18,6 +18,7 @@ function AddStudent({ onStudentAdded }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       await axios.post("http://localhost:5000/students", formData);
 
@@ -25,7 +26,7 @@ function AddStudent({ onStudentAdded }) {
 
       setFormData({ name: "", email: "", course: "", year: "" });
 
-      if (onStudentAdded) onStudentAdded(); // refresh table
+      if (onStudentAdded) onStudentAdded(); // refresh list + close modal
     } catch (err) {
       console.error("Error adding student:", err);
       alert("Failed to add student!");
@@ -33,25 +34,55 @@ function AddStudent({ onStudentAdded }) {
   };
 
   return (
-    <div style={{ marginBottom: "30px" }}>
-      <h2 className="text-xl font-bold text-gray-900">Add New Student</h2>
+    <form onSubmit={handleSubmit} className="space-y-4">
 
-      <form onSubmit={handleSubmit}>
-        <input type="text" name="name" placeholder="Name"
-          value={formData.name} onChange={handleChange} required />
+      <input
+        type="text"
+        name="name"
+        placeholder="Name"
+        value={formData.name}
+        onChange={handleChange}
+        required
+        className="w-full px-3 py-2 border rounded-lg"
+      />
 
-        <input type="email" name="email" placeholder="Email"
-          value={formData.email} onChange={handleChange} required />
+      <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        value={formData.email}
+        onChange={handleChange}
+        required
+        className="w-full px-3 py-2 border rounded-lg"
+      />
 
-        <input type="text" name="course" placeholder="Course"
-          value={formData.course} onChange={handleChange} required />
+      <input
+        type="text"
+        name="course"
+        placeholder="Course"
+        value={formData.course}
+        onChange={handleChange}
+        required
+        className="w-full px-3 py-2 border rounded-lg"
+      />
 
-        <input type="number" name="year" placeholder="Year"
-          value={formData.year} onChange={handleChange} required />
+      <input
+        type="number"
+        name="year"
+        placeholder="Year"
+        value={formData.year}
+        onChange={handleChange}
+        required
+        className="w-full px-3 py-2 border rounded-lg"
+      />
 
-        <button type="submit">Add Student</button>
-      </form>
-    </div>
+      <button
+        type="submit"
+        className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700"
+      >
+        Add Student
+      </button>
+    </form>
   );
 }
 
