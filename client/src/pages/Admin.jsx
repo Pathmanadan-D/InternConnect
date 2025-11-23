@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import DeleteModal from "../components/DeleteModal";
 import AddStudent from "../components/AddStudent";
 import Modal from "../components/Modal";
+
 
 export default function Admin() {
   const [students, setStudents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // Delete modal states
+const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+const [selectedStudentId, setSelectedStudentId] = useState(null);
+
 
   const fetchStudents = async () => {
     try {
@@ -15,6 +21,29 @@ export default function Admin() {
       console.error("Error fetching students:", err);
     }
   };
+//open delete model
+  const openDeleteModal = (id) => {
+    setSelectedStudentId(id);
+    setIsDeleteOpen(true);
+  };
+  
+//close delete model
+const closeDeleteModal = () => {
+  setIsDeleteOpen(false);
+  setSelectedStudentId(null);
+};
+
+//Delete student function
+const deleteStudent = async () => {
+  try {
+    await axios.delete(`http://localhost:5000/students/${selectedStudentId}`);
+    closeDeleteModal();
+    fetchStudents(); // refresh table
+  } catch (err) {
+    console.error("Delete failed:", err);
+  }
+};
+
 
   useEffect(() => {
     fetchStudents();
@@ -77,12 +106,25 @@ export default function Admin() {
                   <td className="px-4 py-3">{s.year}</td>
 
                   <td className="px-4 py-3">
-                    <button className="px-3 py-1.5 rounded-lg bg-white hover:bg-gray-50 border border-gray-200 mr-2">
-                      Edit
-                    </button>
-                    <button className="px-3 py-1.5 rounded-lg bg-red-500 hover:bg-red-600 text-white">
-                      Delete
-                    </button>
+
+                  <button
+                    className="px-3 py-1.5 rounded-lg bg-white border border-gray-200 
+                    hover:bg-gray-50 hover:shadow-sm 
+                    transition-all duration-200 active:scale-[0.97] mr-2"
+                >
+                    Edit
+                   </button>
+
+                   <button
+                      onClick={() => openDeleteModal(s._id)}
+                      className="px-3 py-1.5 rounded-lg bg-red-500 text-white 
+                      hover:bg-red-600 hover:shadow-md 
+                      transition-all duration-200 active:scale-[0.97]"
+                 >
+                     Delete
+                  </button>
+
+
                   </td>
                 </tr>
               ))
@@ -90,6 +132,12 @@ export default function Admin() {
           </tbody>
         </table>
       </div>
+      <DeleteModal
+  isOpen={isDeleteOpen}
+  onClose={closeDeleteModal}
+  onConfirm={deleteStudent}
+/>
+
     </div>
   );
 }

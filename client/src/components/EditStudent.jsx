@@ -1,79 +1,104 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
 
-const EditStudent = () => {
-  const { id } = useParams(); // Get student ID from URL
-  const navigate = useNavigate();
-
-  const [student, setStudent] = useState({
+export default function EditStudent({ studentId, onUpdated }) {
+  const [formData, setFormData] = useState({
     name: "",
     email: "",
     course: "",
     year: ""
   });
 
-  // Fetch existing student data when page loads
+  // 1️⃣ Load existing student data
   useEffect(() => {
-    axios.get(`http://localhost:5000/students/${id}`)
-      .then((res) => setStudent(res.data))
-      .catch((err) => console.error("Error fetching student:", err));
-  }, [id]);
+    if (!studentId) return;
 
-  // Update the student in MongoDB
-  const handleUpdate = (e) => {
-    e.preventDefault();
-    axios.put(`http://localhost:5000/students/${id}`, student)
-      .then(() => {
-        alert("✅ Student updated successfully!");
-        navigate("/"); // Go back to student list
+    axios
+      .get(`http://localhost:5000/students/${studentId}`)
+      .then((res) => {
+        setFormData({
+          name: res.data.name,
+          email: res.data.email,
+          course: res.data.course,
+          year: res.data.year
+        });
       })
-      .catch((err) => {
-        console.error("Error updating student:", err);
-        alert("❌ Failed to update student");
-      });
+      .catch((err) => console.error("Error fetching student:", err));
+  }, [studentId]);
+
+  // Handle input
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // 2️⃣ Handle update
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+
+    try {
+      await axios.put(
+        `http://localhost:5000/students/${studentId}`,
+        formData
+      );
+
+      alert("Student updated successfully!");
+
+      if (onUpdated) onUpdated(); // refresh list & close modal
+    } catch (err) {
+      console.error("Error updating student:", err);
+      alert("Failed to update student!");
+    }
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>✏️ Edit Student</h2>
-      <form onSubmit={handleUpdate}>
-        <input
-          type="text"
-          placeholder="Name"
-          value={student.name}
-          onChange={(e) => setStudent({ ...student, name: e.target.value })}
-          required
-        />
-        <br /><br />
-        <input
-          type="email"
-          placeholder="Email"
-          value={student.email}
-          onChange={(e) => setStudent({ ...student, email: e.target.value })}
-          required
-        />
-        <br /><br />
-        <input
-          type="text"
-          placeholder="Course"
-          value={student.course}
-          onChange={(e) => setStudent({ ...student, course: e.target.value })}
-          required
-        />
-        <br /><br />
-        <input
-          type="number"
-          placeholder="Year"
-          value={student.year}
-          onChange={(e) => setStudent({ ...student, year: e.target.value })}
-          required
-        />
-        <br /><br />
-        <button type="submit">Update Student</button>
-      </form>
-    </div>
-  );
-};
+    <form onSubmit={handleUpdate} className="space-y-4">
 
-export default EditStudent;
+      <input
+        type="text"
+        name="name"
+        placeholder="Name"
+        value={formData.name}
+        onChange={handleChange}
+        required
+        className="w-full px-3 py-2 border rounded-lg"
+      />
+
+      <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        value={formData.email}
+        onChange={handleChange}
+        required
+        className="w-full px-3 py-2 border rounded-lg"
+      />
+
+      <input
+        type="text"
+        name="course"
+        placeholder="Course"
+        value={formData.course}
+        onChange={handleChange}
+        required
+        className="w-full px-3 py-2 border rounded-lg"
+      />
+
+      <input
+        type="number"
+        name="year"
+        placeholder="Year"
+        value={formData.year}
+        onChange={handleChange}
+        required
+        className="w-full px-3 py-2 border rounded-lg"
+      />
+
+      <button
+        type="submit"
+        className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700"
+      >
+        Update Student
+      </button>
+    </form>
+  );
+}
