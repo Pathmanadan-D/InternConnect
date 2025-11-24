@@ -3,6 +3,8 @@ import axios from "axios";
 import DeleteModal from "../components/DeleteModal";
 import AddStudent from "../components/AddStudent";
 import Modal from "../components/Modal";
+import EditStudent from "../components/EditStudent";
+
 
 
 export default function Admin() {
@@ -11,6 +13,10 @@ export default function Admin() {
   // Delete modal states
 const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 const [selectedStudentId, setSelectedStudentId] = useState(null);
+// Edit modal states
+const [isEditOpen, setIsEditOpen] = useState(false);
+const [selectedStudent, setSelectedStudent] = useState(null);
+
 
 
   const fetchStudents = async () => {
@@ -25,6 +31,11 @@ const [selectedStudentId, setSelectedStudentId] = useState(null);
   const openDeleteModal = (id) => {
     setSelectedStudentId(id);
     setIsDeleteOpen(true);
+  };
+  
+  const openEditModal = (student) => {
+    setSelectedStudent(student);
+    setIsEditOpen(true);
   };
   
 //close delete model
@@ -62,6 +73,21 @@ const deleteStudent = async () => {
           + Add Student
         </button>
       </div>
+
+      <Modal
+  isOpen={isEditOpen}
+  onClose={() => setIsEditOpen(false)}
+  title="Edit Student"
+>
+  <EditStudent
+    student={selectedStudent}
+    onStudentUpdated={() => {
+        fetchStudents();
+        setIsEditOpen(false);
+    }}
+  />
+</Modal>
+
 
       {/* Modal */}
       <Modal
@@ -108,12 +134,14 @@ const deleteStudent = async () => {
                   <td className="px-4 py-3">
 
                   <button
-                    className="px-3 py-1.5 rounded-lg bg-white border border-gray-200 
-                    hover:bg-gray-50 hover:shadow-sm 
-                    transition-all duration-200 active:scale-[0.97] mr-2"
-                >
-                    Edit
-                   </button>
+                      onClick={() => openEditModal(s)}
+                      className="px-3 py-1.5 rounded-lg bg-white border border-gray-200 
+                      hover:bg-gray-50 hover:shadow-sm 
+                      transition-all duration-200 active:scale-[0.97] mr-2"
+                   >
+                          Edit
+                      </button>
+
 
                    <button
                       onClick={() => openDeleteModal(s._id)}
