@@ -12,7 +12,6 @@ export default function Admin() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   // Delete modal states
 const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-const [selectedStudentId, setSelectedStudentId] = useState(null);
 // Edit modal states
 const [isEditOpen, setIsEditOpen] = useState(false);
 const [selectedStudent, setSelectedStudent] = useState(null);
@@ -27,33 +26,27 @@ const [selectedStudent, setSelectedStudent] = useState(null);
       console.error("Error fetching students:", err);
     }
   };
-//open delete model
-  const openDeleteModal = (id) => {
-    setSelectedStudentId(id);
-    setIsDeleteOpen(true);
-  };
+
   
   const openEditModal = (student) => {
     setSelectedStudent(student);
     setIsEditOpen(true);
   };
   
-//close delete model
-const closeDeleteModal = () => {
-  setIsDeleteOpen(false);
-  setSelectedStudentId(null);
-};
+
 
 //Delete student function
 const deleteStudent = async () => {
   try {
-    await axios.delete(`http://localhost:5000/students/${selectedStudentId}`);
-    closeDeleteModal();
-    fetchStudents(); // refresh table
+    await axios.delete(`http://localhost:5000/students/${selectedStudent._id}`);
+    setIsDeleteOpen(false);
+    setSelectedStudent(null);
+    fetchStudents();
   } catch (err) {
     console.error("Delete failed:", err);
   }
 };
+
 
 
   useEffect(() => {
@@ -144,7 +137,10 @@ const deleteStudent = async () => {
 
 
                    <button
-                      onClick={() => openDeleteModal(s._id)}
+                      onClick={() => {
+                        setSelectedStudent(s); 
+                        setIsDeleteOpen(true);
+                    }}                    
                       className="px-3 py-1.5 rounded-lg bg-red-500 text-white 
                       hover:bg-red-600 hover:shadow-md 
                       transition-all duration-200 active:scale-[0.97]"
@@ -162,9 +158,15 @@ const deleteStudent = async () => {
       </div>
       <DeleteModal
   isOpen={isDeleteOpen}
-  onClose={closeDeleteModal}
+  onClose={() => {
+    setIsDeleteOpen(false);
+    setSelectedStudent(null);
+  }}
   onConfirm={deleteStudent}
+  student={selectedStudent}
 />
+
+
 
     </div>
   );

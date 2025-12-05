@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 
 export default function DeleteModal({ isOpen, onClose, onConfirm }) {
   if (!isOpen) return null;
@@ -20,7 +21,7 @@ export default function DeleteModal({ isOpen, onClose, onConfirm }) {
         <div className="mt-6 flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg"
+            className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100"
           >
             Cancel
           </button>
@@ -36,3 +37,4 @@ export default function DeleteModal({ isOpen, onClose, onConfirm }) {
     </div>
   );
 }
+
