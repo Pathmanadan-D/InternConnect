@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -20,6 +21,7 @@ async function startServer() {
       useUnifiedTopology: true,
     });
     console.log("✅ MongoDB connected successfully via Mongoose!");
+
 
     app.listen(PORT, () => {
       console.log(`🚀 Server is running on http://localhost:${PORT}`);
