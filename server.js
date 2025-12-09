@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const studentRoutes = require('./routes/studentRoutes'); // ✅ import routes
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -38,6 +39,9 @@ startServer();
 app.get('/', (req, res) => {
   res.send('Hello, InternConnect Backend is Running!');
 });
+
+// ✅ ADD THIS LINE
+app.use('/auth', authRoutes);
 
 // ✅ Use Student Routes
 app.use('/students', studentRoutes);
