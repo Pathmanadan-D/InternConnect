@@ -5,14 +5,15 @@ const mongoose = require('mongoose');
 const studentRoutes = require('./routes/studentRoutes'); // ✅ import routes
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
+
 
 // Middleware
 app.use(cors());
 app.use(express.json()); // Parse JSON body
 
 // MongoDB connection
-const mongoURL = "mongodb+srv://internconnect_user:Internmongo21@internconnectcluster.gpuq8ax.mongodb.net/internconnectDB?retryWrites=true&w=majority";
+const mongoURL = process.env.MONGO_URL;
 
 async function startServer() {
   try {
