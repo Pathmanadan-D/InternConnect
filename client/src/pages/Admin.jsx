@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import DeleteModal from "../components/DeleteModal";
 import AddStudent from "../components/AddStudent";
 import Modal from "../components/Modal";
@@ -20,7 +20,7 @@ const [selectedStudent, setSelectedStudent] = useState(null);
 
   const fetchStudents = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/students");
+      const res = await axios.get("/students");
       setStudents(res.data);
     } catch (err) {
       console.error("Error fetching students:", err);
@@ -38,7 +38,7 @@ const [selectedStudent, setSelectedStudent] = useState(null);
 //Delete student function
 const deleteStudent = async () => {
   try {
-    await axios.delete(`http://localhost:5000/students/${selectedStudent._id}`);
+    await axios.delete(`/students/${selectedStudent._id}`);
     setIsDeleteOpen(false);
     setSelectedStudent(null);
     fetchStudents();

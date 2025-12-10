@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 
 const EditStudent = ({ student, onStudentUpdated }) => {
   const [formData, setFormData] = useState({
@@ -40,10 +40,7 @@ const EditStudent = ({ student, onStudentUpdated }) => {
     setErrorMessage("");
 
     try {
-      await axios.put(
-        `http://localhost:5000/students/${student._id}`,
-        formData
-      );
+      await axios.put(`/students/${student._id}`, formData);
 
       if (onStudentUpdated) onStudentUpdated();
     } catch (err) {
