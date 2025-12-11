@@ -1,8 +1,7 @@
 import React from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaUserCircle } from "react-icons/fa";
-import { useAuth } from "../context/AuthContext";
 
 const navLinkClass = ({ isActive }) =>
   `px-3 py-1 rounded-md transition-colors ${
@@ -12,13 +11,6 @@ const navLinkClass = ({ isActive }) =>
   }`;
 
 export default function Navbar() {
-  const { isAuthenticated, user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/", { replace: true });
-  };
 
   return (
     <motion.header
@@ -52,30 +44,17 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-3">
-          {!isAuthenticated ? (
-            <Link
-              to="/auth"
-              className="hidden sm:inline-flex px-3 py-1.5 rounded-lg bg-purple-600 text-white hover:brightness-110 transition"
-            >
-              Login
-            </Link>
-          ) : (
-            <>
-              <div className="flex items-center gap-2 text-sm text-gray-700">
-                <FaUserCircle className="text-gray-700" size={24} />
-                <span className="hidden sm:inline">{user?.name || "User"}</span>
-              </div>
-              <button
-                onClick={handleLogout}
-                className="px-3 py-1.5 rounded-lg border border-gray-200 hover:border-gray-300 text-gray-700 transition"
-              >
-                Logout
-              </button>
-            </>
-          )}
+          <Link
+            to="/auth"
+            className="hidden sm:inline-flex px-3 py-1.5 rounded-lg bg-purple-600 text-white hover:brightness-110 transition"
+          >
+            Login
+          </Link>
+          <FaUserCircle className="text-gray-700" size={24} />
         </div>
       </div>
     </motion.header>
   );
 }
+
 

@@ -12,6 +12,11 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(express.json()); // Parse JSON body
+// serve uploaded resume files
+app.use("/uploads", express.static("uploads"));
+// profile routes
+app.use("/profile", require("./routes/profileRoutes"));
+
 
 // MongoDB connection
 const mongoURL = process.env.MONGO_URL;
