@@ -7,8 +7,6 @@ export default function Profile() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  console.log("PROFILE PAGE RENDERED — PAGES");
-
 
   useEffect(() => {
     fetchProfile();
