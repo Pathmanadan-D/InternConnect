@@ -27,9 +27,12 @@ function App() {
             trailingSpeed={4}
             clickables={["a", "button", ".cursorable"]}
           />
+
           <Navbar />
+
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex gap-6">
             <Sidebar />
+
             <main className="flex-1 py-6">
               <AnimatePresence mode="wait">
                 <Routes>
@@ -41,6 +44,7 @@ function App() {
                       </Page>
                     }
                   />
+
                   <Route
                     path="/auth"
                     element={
@@ -49,6 +53,7 @@ function App() {
                       </Page>
                     }
                   />
+
                   <Route
                     path="/dashboard"
                     element={
@@ -57,6 +62,7 @@ function App() {
                       </Page>
                     }
                   />
+
                   <Route
                     path="/internships"
                     element={
@@ -65,14 +71,18 @@ function App() {
                       </Page>
                     }
                   />
+
                   <Route
                     path="/profile"
                     element={
                       <Page>
-                        <Profile />
+                        <RequireAuth>
+                          <Profile />
+                        </RequireAuth>
                       </Page>
                     }
                   />
+
                   <Route
                     path="/admin"
                     element={
@@ -93,6 +103,8 @@ function App() {
   );
 }
 
+/* ---------- AUTH GUARDS ---------- */
+
 function RequireAdmin({ children }) {
   const { isAuthenticated, isAdmin } = useAuth();
 
@@ -102,6 +114,18 @@ function RequireAdmin({ children }) {
 
   return children;
 }
+
+function RequireAuth({ children }) {
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  return children;
+}
+
+/* ---------- PAGE TRANSITION ---------- */
 
 function Page({ children }) {
   return (

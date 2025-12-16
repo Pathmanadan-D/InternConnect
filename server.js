@@ -1,22 +1,31 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
-const studentRoutes = require('./routes/studentRoutes'); // ✅ import routes
-const authRoutes = require('./routes/authRoutes');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+
+const authRoutes = require("./routes/authRoutes");
+const studentRoutes = require("./routes/studentRoutes");
+const profileRoutes = require("./routes/profileRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-
 // Middleware
 app.use(cors());
-app.use(express.json()); // Parse JSON body
-// serve uploaded resume files
-app.use("/uploads", express.static("uploads"));
-// profile routes
-app.use("/profile", require("./routes/profileRoutes"));
+app.use(express.json());
 
+// Serve uploaded resume files
+app.use("/uploads", express.static("uploads"));
+
+// Routes
+app.use("/auth", authRoutes);
+app.use("/students", studentRoutes);
+app.use("/profile", profileRoutes);
+
+// Test route
+app.get("/", (req, res) => {
+  res.send("Hello, InternConnect Backend is Running!");
+});
 
 // MongoDB connection
 const mongoURL = process.env.MONGO_URL;
@@ -27,26 +36,15 @@ async function startServer() {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
+
     console.log("✅ MongoDB connected successfully via Mongoose!");
 
-
     app.listen(PORT, () => {
-      console.log(`🚀 Server is running on http://localhost:${PORT}`);
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
     });
   } catch (err) {
-    console.log("❌ MongoDB connection error:", err);
+    console.error("❌ MongoDB connection error:", err);
   }
 }
 
 startServer();
-
-// Routes
-app.get('/', (req, res) => {
-  res.send('Hello, InternConnect Backend is Running!');
-});
-
-// ✅ ADD THIS LINE
-app.use('/auth', authRoutes);
-
-// ✅ Use Student Routes
-app.use('/students', studentRoutes);

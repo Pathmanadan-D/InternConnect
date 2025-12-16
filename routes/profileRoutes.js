@@ -4,56 +4,34 @@ const User = require("../models/User");
 const { authenticateToken } = require("../middleware/authMiddleware");
 const upload = require("../middleware/resumeUpload");
 
-// GET profile (self)
+// Get logged-in user profile
 router.get("/", authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
     res.json(user);
   } catch (err) {
-    console.error("Profile fetch error:", err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Failed to load profile" });
   }
 });
 
-// UPDATE basic profile
-router.put("/", authenticateToken, async (req, res) => {
-  try {
-    const { name, email, course, year } = req.body;
-
-    const updated = await User.findByIdAndUpdate(
-      req.user.id,
-      { name, email, course, year },
-      { new: true }
-    ).select("-password");
-
-    res.json({ message: "Profile updated", user: updated });
-  } catch (err) {
-    console.error("Profile update error:", err);
-    res.status(500).json({ message: "Error updating profile" });
-  }
-});
-
-// UPLOAD resume
+// Upload resume
 router.post(
   "/resume",
   authenticateToken,
   upload.single("resume"),
   async (req, res) => {
     try {
-      const updated = await User.findByIdAndUpdate(
-        req.user.id,
-        { resume: req.file.filename },
-        { new: true }
-      ).select("-password");
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
 
-      res.json({
-        message: "Resume uploaded",
-        file: req.file.filename,
-        user: updated,
-      });
+      const user = await User.findById(req.user.id);
+      user.resume = req.file.path;
+      await user.save();
+
+      res.json({ message: "Resume uploaded successfully" });
     } catch (err) {
-      console.error("Resume upload error:", err);
-      res.status(500).json({ message: "Error uploading resume" });
+      res.status(500).json({ message: "Resume upload failed" });
     }
   }
 );
