@@ -39,8 +39,10 @@ router.put("/:id", authenticateToken, async (req, res) => {
 
     res.json({ message: "Internship updated", internship: updated });
   } catch (err) {
-    res.status(500).json({ message: "Failed to update internship" });
+    console.error("CREATE INTERNSHIP ERROR:", err);
+    res.status(500).json({ message: err.message });
   }
+  
 });
 
 // DELETE internship
