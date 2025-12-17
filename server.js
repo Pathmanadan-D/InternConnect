@@ -6,6 +6,8 @@ const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
 const studentRoutes = require("./routes/studentRoutes");
 const profileRoutes = require("./routes/profileRoutes");
+const internshipRoutes = require("./routes/internshipRoutes");
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -21,6 +23,7 @@ app.use("/uploads", express.static("uploads"));
 app.use("/auth", authRoutes);
 app.use("/students", studentRoutes);
 app.use("/profile", profileRoutes);
+app.use("/internships", internshipRoutes);
 
 // Test route
 app.get("/", (req, res) => {
