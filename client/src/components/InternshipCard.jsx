@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+import { applyInternship } from "../api/applications";
+import { useAuth } from "../context/AuthContext";
 
 export default function InternshipCard({
   internship,
@@ -6,6 +8,28 @@ export default function InternshipCard({
   onEdit,
   onDelete,
 }) {
+  const { isAuthenticated } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [applied, setApplied] = useState(false);
+
+  const handleApply = async () => {
+    if (!isAuthenticated) {
+      alert("Please login first");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await applyInternship(internship._id);
+      setApplied(true);
+      alert("Application submitted");
+    } catch (err) {
+      alert(err?.response?.data?.message || "Apply failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="bg-white rounded-xl border shadow-sm p-5 space-y-2">
       <h3 className="text-lg font-semibold">{internship.title}</h3>
@@ -28,6 +52,7 @@ export default function InternshipCard({
 
       <p className="text-sm text-gray-700">{internship.description}</p>
 
+      {/* ADMIN ACTIONS */}
       {isAdmin && (
         <div className="flex gap-3 pt-3">
           <button
@@ -43,6 +68,19 @@ export default function InternshipCard({
             Delete
           </button>
         </div>
+      )}
+
+      {/* STUDENT APPLY */}
+      {!isAdmin && (
+        <button
+          onClick={handleApply}
+          disabled={loading || applied}
+          className={`w-full mt-3 py-2 rounded-lg text-white
+            ${applied ? "bg-gray-400" : "bg-purple-600 hover:bg-purple-700"}
+          `}
+        >
+          {applied ? "Applied" : loading ? "Applying..." : "Apply"}
+        </button>
       )}
     </div>
   );

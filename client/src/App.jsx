@@ -11,6 +11,8 @@ import Admin from "./pages/Admin";
 import AnimatedCursor from "react-animated-cursor";
 import { AnimatePresence, motion } from "framer-motion";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import AdminApplications from "./pages/AdminApplications";
+
 
 function App() {
   return (
@@ -71,6 +73,16 @@ function App() {
                       </Page>
                     }
                   />
+
+<Route
+  path="/admin/applications"
+  element={
+    <RequireAdmin>
+      <AdminApplications />
+    </RequireAdmin>
+  }
+/>
+
 
                   <Route
                     path="/profile"
