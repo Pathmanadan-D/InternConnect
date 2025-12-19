@@ -48,9 +48,9 @@ router.post("/apply/:internshipId", authenticateToken, async (req, res) => {
   }
 });
 
-/* ---------------- ADMIN VIEW ---------------- */
+/* ---------------- ADMIN ONLY ---------------- */
 
-// View all applications (admin)
+// View all applications
 router.get("/admin", authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== "admin") {
@@ -58,14 +58,38 @@ router.get("/admin", authenticateToken, async (req, res) => {
     }
 
     const applications = await Application.find()
-      .populate("student", "name email")
+      .populate("student", "name email resume")
       .populate("internship", "title company")
       .sort({ createdAt: -1 });
 
     res.json(applications);
   } catch (err) {
-    console.error("Fetch applications error:", err);
     res.status(500).json({ message: "Failed to load applications" });
+  }
+});
+
+// Update application status
+router.put("/:id/status", authenticateToken, async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    const { status } = req.body;
+
+    if (!["approved", "rejected"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+
+    const updated = await Application.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    res.json({ message: "Status updated", application: updated });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to update status" });
   }
 });
 

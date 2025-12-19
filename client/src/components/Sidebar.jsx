@@ -2,6 +2,8 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaHome, FaUser, FaSignOutAlt, FaTable, FaBriefcase } from "react-icons/fa";
+import { useAuth } from "../context/AuthContext";
+
 
 const linkBase =
   "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors";
@@ -12,8 +14,10 @@ const linkClass = ({ isActive }) =>
       ? "bg-purple-100 text-purple-700"
       : "text-gray-700 hover:text-gray-900 hover:bg-gray-100"
   }`;
+  
 
-export default function Sidebar() {
+  export default function Sidebar() {
+    const { isAdmin, logout } = useAuth();
   return (
     <motion.aside
       initial={{ x: -24, opacity: 0 }}
@@ -35,12 +39,25 @@ export default function Sidebar() {
           <NavLink to="/profile" className={linkClass}>
             <FaUser /> Profile
           </NavLink>
-          <NavLink to="/admin" className={linkClass}>
-            <FaTable /> Admin
-          </NavLink>
-          <button className="mt-4 flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100">
-            <FaSignOutAlt /> Logout
-          </button>
+          {isAdmin && (
+  <>
+    <NavLink to="/admin" className={linkClass}>
+      <FaTable /> Manage Internships
+    </NavLink>
+
+    <NavLink to="/admin/applications" className={linkClass}>
+      <FaBriefcase /> Applications
+    </NavLink>
+  </>
+)}
+
+          <button
+  onClick={logout}
+  className="mt-4 flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+>
+  <FaSignOutAlt /> Logout
+</button>
+
         </nav>
       </div>
     </motion.aside>

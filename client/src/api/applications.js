@@ -11,3 +11,8 @@ export const getAllApplications = async () => {
   const res = await axios.get("/applications/admin");
   return res.data;
 };
+
+export const updateApplicationStatus = async (id, status) => {
+  const res = await axios.put(`/applications/${id}/status`, { status });
+  return res.data;
+};
