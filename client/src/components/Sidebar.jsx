@@ -51,6 +51,13 @@ const linkClass = ({ isActive }) =>
   </>
 )}
 
+{!isAdmin && (
+  <NavLink to="/my-applications" className={linkClass}>
+    <FaTable /> My Applications
+  </NavLink>
+)}
+
+
           <button
   onClick={logout}
   className="mt-4 flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100"

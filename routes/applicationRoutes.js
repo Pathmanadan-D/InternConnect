@@ -68,6 +68,26 @@ router.get("/admin", authenticateToken, async (req, res) => {
   }
 });
 
+// STUDENT view own applications
+router.get("/my", authenticateToken, async (req, res) => {
+  try {
+    if (req.user.role !== "student") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    const applications = await Application.find({
+      student: req.user.id,
+    })
+      .populate("internship", "title company location")
+      .sort({ createdAt: -1 });
+
+    res.json(applications);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to load applications" });
+  }
+});
+
+
 // Update application status
 router.put("/:id/status", authenticateToken, async (req, res) => {
   try {

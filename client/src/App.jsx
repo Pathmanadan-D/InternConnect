@@ -12,6 +12,8 @@ import AnimatedCursor from "react-animated-cursor";
 import { AnimatePresence, motion } from "framer-motion";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import AdminApplications from "./pages/AdminApplications";
+import MyApplications from "./pages/MyApplications";
+
 
 
 function App() {
@@ -82,6 +84,9 @@ function App() {
     </RequireAdmin>
   }
 />
+
+<Route path="/my-applications" element={<MyApplications />} />
+
 
 
                   <Route
