@@ -3,6 +3,30 @@ import {
   getAllApplications,
   updateApplicationStatus,
 } from "../api/applications";
+import { motion } from "framer-motion";
+import {
+  FaCheckCircle,
+  FaTimesCircle,
+  FaClock,
+} from "react-icons/fa";
+
+const statusStyle = {
+  pending: {
+    label: "Pending",
+    color: "bg-amber-100 text-amber-700",
+    icon: <FaClock />,
+  },
+  approved: {
+    label: "Approved",
+    color: "bg-green-100 text-green-700",
+    icon: <FaCheckCircle />,
+  },
+  rejected: {
+    label: "Rejected",
+    color: "bg-red-100 text-red-700",
+    icon: <FaTimesCircle />,
+  },
+};
 
 export default function AdminApplications() {
   const [apps, setApps] = useState([]);
@@ -27,10 +51,10 @@ export default function AdminApplications() {
 
       <div className="overflow-x-auto bg-white border rounded-xl">
         <table className="w-full text-sm">
-          <thead className="bg-gray-100">
+          <thead className="bg-gray-50">
             <tr>
-              <th className="p-3">Student</th>
-              <th className="p-3">Internship</th>
+              <th className="p-3 text-left">Student</th>
+              <th className="p-3 text-left">Internship</th>
               <th className="p-3">Resume</th>
               <th className="p-3">Status</th>
               <th className="p-3">Action</th>
@@ -38,54 +62,93 @@ export default function AdminApplications() {
           </thead>
 
           <tbody>
-            {apps.map((a) => (
-              <tr key={a._id} className="border-t">
-                <td className="p-3">
-                  {a.student.name}
-                  <br />
-                  <span className="text-xs text-gray-500">
-                    {a.student.email}
-                  </span>
-                </td>
+            {apps.map((a, i) => {
+              const status = statusStyle[a.status];
+              const isFinal = a.status !== "pending";
 
-                <td className="p-3">
-                  {a.internship.title}
-                  <br />
-                  <span className="text-xs text-gray-500">
-                    {a.internship.company}
-                  </span>
-                </td>
+              return (
+                <motion.tr
+                  key={a._id}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.03 }}
+                  className="border-t hover:bg-gray-50"
+                >
+                  <td className="p-3">
+                    <div className="font-medium">{a.student.name}</div>
+                    <div className="text-xs text-gray-500">
+                      {a.student.email}
+                    </div>
+                  </td>
 
-                <td className="p-3">
-                  {a.student.resume && (
-                    <a
-                      href={`http://localhost:5000/${a.student.resume}`}
-                      target="_blank"
-                      className="text-purple-600 underline"
+                  <td className="p-3">
+                    <div className="font-medium">
+                      {a.internship.title}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {a.internship.company}
+                    </div>
+                  </td>
+
+                  <td className="p-3 text-center">
+                    {a.student.resume && (
+                      <a
+                        href={`http://localhost:5000/${a.student.resume}`}
+                        target="_blank"
+                        className="text-purple-600 underline"
+                      >
+                        View
+                      </a>
+                    )}
+                  </td>
+
+                  <td className="p-3 text-center">
+                    <span
+                      className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${status.color}`}
                     >
-                      View
-                    </a>
-                  )}
-                </td>
+                      {status.icon}
+                      {status.label}
+                    </span>
+                  </td>
 
-                <td className="p-3 capitalize">{a.status}</td>
+                  <td className="p-3">
+                    <div className="flex gap-2 justify-center">
+                      <button
+                        disabled={isFinal}
+                        onClick={() =>
+                          updateStatus(a._id, "approved")
+                        }
+                        className={`px-3 py-1 rounded text-white text-xs
+                          ${
+                            isFinal
+                              ? "bg-gray-300 cursor-not-allowed"
+                              : "bg-green-600 hover:bg-green-700"
+                          }
+                        `}
+                      >
+                        Approve
+                      </button>
 
-                <td className="p-3 flex gap-2">
-                  <button
-                    onClick={() => updateStatus(a._id, "approved")}
-                    className="px-3 py-1 bg-green-600 text-white rounded"
-                  >
-                    Approve
-                  </button>
-                  <button
-                    onClick={() => updateStatus(a._id, "rejected")}
-                    className="px-3 py-1 bg-red-600 text-white rounded"
-                  >
-                    Reject
-                  </button>
-                </td>
-              </tr>
-            ))}
+                      <button
+                        disabled={isFinal}
+                        onClick={() =>
+                          updateStatus(a._id, "rejected")
+                        }
+                        className={`px-3 py-1 rounded text-white text-xs
+                          ${
+                            isFinal
+                              ? "bg-gray-300 cursor-not-allowed"
+                              : "bg-red-600 hover:bg-red-700"
+                          }
+                        `}
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  </td>
+                </motion.tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
