@@ -4,7 +4,6 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 
 const authRoutes = require("./routes/authRoutes");
-const studentRoutes = require("./routes/studentRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 const internshipRoutes = require("./routes/internshipRoutes");
 const applicationRoutes = require("./routes/applicationRoutes");
@@ -23,7 +22,6 @@ app.use("/uploads", express.static("uploads"));
 
 // Routes
 app.use("/auth", authRoutes);
-app.use("/students", studentRoutes);
 app.use("/profile", profileRoutes);
 app.use("/internships", internshipRoutes);
 app.use("/applications", applicationRoutes);

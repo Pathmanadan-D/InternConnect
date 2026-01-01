@@ -7,12 +7,13 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Internships from "./pages/Internships";
 import Profile from "./pages/Profile";
-import Admin from "./pages/Admin";
 import AnimatedCursor from "react-animated-cursor";
 import { AnimatePresence, motion } from "framer-motion";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import AdminApplications from "./pages/AdminApplications";
 import MyApplications from "./pages/MyApplications";
+import ManageInternships from "./pages/ManageInternships";
+
 
 
 
@@ -87,6 +88,12 @@ function App() {
 
 <Route path="/my-applications" element={<MyApplications />} />
 
+<Route
+  path="/manage-internships"
+  element={<ManageInternships />}
+/>
+
+
 
 
                   <Route
@@ -100,16 +107,7 @@ function App() {
                     }
                   />
 
-                  <Route
-                    path="/admin"
-                    element={
-                      <Page>
-                        <RequireAdmin>
-                          <Admin />
-                        </RequireAdmin>
-                      </Page>
-                    }
-                  />
+                  
                 </Routes>
               </AnimatePresence>
             </main>

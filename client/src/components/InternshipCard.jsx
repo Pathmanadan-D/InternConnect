@@ -95,24 +95,34 @@ export default function InternshipCard({
 
       {/* STUDENT APPLY */}
       {!isAdmin && (
-        <button
-          onClick={handleApply}
-          disabled={loading || applied}
-          className={`w-full mt-2 py-2 rounded-lg text-white text-sm transition
-            ${
-              applied
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-purple-600 hover:bg-purple-700"
-            }
-          `}
-        >
-          {applied
-            ? "Applied"
-            : loading
-            ? "Applying..."
-            : "Apply"}
-        </button>
-      )}
+  internship.status === "open" ? (
+    <button
+      onClick={handleApply}
+      disabled={loading || applied}
+      className={`w-full mt-2 py-2 rounded-lg text-white text-sm transition
+        ${
+          applied
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-purple-600 hover:bg-purple-700"
+        }
+      `}
+    >
+      {applied
+        ? "Applied"
+        : loading
+        ? "Applying..."
+        : "Apply"}
+    </button>
+  ) : (
+    <button
+      disabled
+      className="w-full mt-2 py-2 rounded-lg bg-gray-300 text-gray-600 text-sm cursor-not-allowed"
+    >
+      Closed
+    </button>
+  )
+)}
+
     </motion.div>
   );
 }

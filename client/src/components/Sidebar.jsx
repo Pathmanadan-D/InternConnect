@@ -41,8 +41,8 @@ const linkClass = ({ isActive }) =>
           </NavLink>
           {isAdmin && (
   <>
-    <NavLink to="/admin" className={linkClass}>
-      <FaTable /> Manage Internships
+    <NavLink to="/manage-internships" className={linkClass}>
+      <FaBriefcase /> Manage Internships
     </NavLink>
 
     <NavLink to="/admin/applications" className={linkClass}>

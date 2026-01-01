@@ -9,6 +9,8 @@ import {
   FaTimesCircle,
   FaClock,
 } from "react-icons/fa";
+import { useSearchParams } from "react-router-dom";
+
 
 const statusStyle = {
   pending: {
@@ -31,19 +33,26 @@ const statusStyle = {
 export default function AdminApplications() {
   const [apps, setApps] = useState([]);
 
+  const [params] = useSearchParams();
+  const internshipId = params.get("internship"); // ✅ FIRST
+
   const load = async () => {
-    const data = await getAllApplications();
+    const data = await getAllApplications(internshipId);
     setApps(data);
   };
+  
 
   useEffect(() => {
     load();
-  }, []);
+  }, [internshipId]);
+  
 
   const updateStatus = async (id, status) => {
     await updateApplicationStatus(id, status);
     load();
   };
+
+
 
   return (
     <div className="space-y-6">

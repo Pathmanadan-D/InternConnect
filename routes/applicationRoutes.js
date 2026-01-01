@@ -10,6 +10,7 @@ const { authenticateToken } = require("../middleware/authMiddleware");
 // Apply to internship
 router.post("/apply/:internshipId", authenticateToken, async (req, res) => {
   try {
+
     if (req.user.role !== "student") {
       return res.status(403).json({ message: "Only students can apply" });
     }
@@ -39,6 +40,13 @@ router.post("/apply/:internshipId", authenticateToken, async (req, res) => {
       resume: user.resume,
     });
 
+    if (internship.status !== "open") {
+      return res.status(400).json({
+        message: "This internship is closed",
+      });
+    }
+    
+
     await application.save();
 
     res.status(201).json({ message: "Application submitted" });
@@ -55,6 +63,12 @@ router.get("/admin", authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== "admin") {
       return res.status(403).json({ message: "Access denied" });
+    }
+
+    const filter = {};
+
+    if (req.query.internship) {
+      filter.internship = req.query.internship;
     }
 
     const applications = await Application.find()

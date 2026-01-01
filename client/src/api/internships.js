@@ -21,3 +21,9 @@ export const deleteInternship = async (id) => {
   const res = await axios.delete(`/internships/${id}`);
   return res.data;
 };
+
+export const toggleInternshipStatus = async (id) => {
+  const res = await axios.put(`/internships/${id}/toggle-status`);
+  return res.data;
+};
+

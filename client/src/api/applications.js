@@ -13,10 +13,16 @@ export const getMyApplications = async () => {
 };
 
 // Admin view all applications
-export const getAllApplications = async () => {
-  const res = await axios.get("/applications/admin");
+export const getAllApplications = async (internshipId) => {
+  const res = await axios.get(
+    internshipId
+      ? `/applications/admin?internship=${internshipId}`
+      : "/applications/admin"
+  );
   return res.data;
 };
+
+
 
 export const updateApplicationStatus = async (id, status) => {
   const res = await axios.put(`/applications/${id}/status`, { status });
