@@ -67,11 +67,12 @@ router.get("/admin", authenticateToken, async (req, res) => {
 
     const filter = {};
 
+    // ✅ THIS IS THE FIX
     if (req.query.internship) {
       filter.internship = req.query.internship;
     }
 
-    const applications = await Application.find()
+    const applications = await Application.find(filter)
       .populate("student", "name email resume")
       .populate("internship", "title company")
       .sort({ createdAt: -1 });
