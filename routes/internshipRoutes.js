@@ -4,7 +4,7 @@ const Internship = require("../models/Internship");
 const { authenticateToken } = require("../middleware/authMiddleware");
 const Application = require("../models/Application");
 const mongoose = require("mongoose");
-
+const jwt = require("jsonwebtoken");
 /* ---------------- ADMIN ONLY ---------------- */
 
 // CREATE internship
@@ -16,7 +16,7 @@ router.post("/", authenticateToken, async (req, res) => {
 
     const internship = new Internship({
       ...req.body,
-      createdBy: req.user.id,
+      createdBy: new mongoose.Types.ObjectId(req.user.id),
     });
 
     await internship.save();
@@ -62,37 +62,37 @@ router.delete("/:id", authenticateToken, async (req, res) => {
 });
 
 /* ---------------- GET internships ---------------- */
-router.get("/", authenticateToken, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    // ADMIN: only their internships + application count
-    if (req.user.role === "admin") {
-      const internships = await Internship.aggregate([
-        { $match: { createdBy: new mongoose.Types.ObjectId(req.user.id) } },
-        {
-          $lookup: {
-            from: "applications",
-            localField: "_id",
-            foreignField: "internship",
-            as: "applications",
-          },
-        },
-        {
-          $addFields: {
-            applicationCount: { $size: "$applications" },
-          },
-        },
-        {
-          $project: {
-            applications: 0,
-          },
-        },
-        { $sort: { createdAt: -1 } },
-      ]);
+    if (req.headers.authorization) {
+      const token = req.headers.authorization.split(" ")[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      return res.json(internships);
+      if (decoded.role === "admin") {
+        const internships = await Internship.aggregate([
+          { $match: { createdBy: new mongoose.Types.ObjectId(decoded.id) } },
+          {
+            $lookup: {
+              from: "applications",
+              localField: "_id",
+              foreignField: "internship",
+              as: "applications",
+            },
+          },
+          {
+            $addFields: {
+              applicationCount: { $size: "$applications" },
+            },
+          },
+          { $project: { applications: 0 } },
+          { $sort: { createdAt: -1 } },
+        ]);
+
+        return res.json(internships);
+      }
     }
 
-    // STUDENT / PUBLIC: only OPEN internships
+    // STUDENT / PUBLIC
     const internships = await Internship.find({ status: "open" }).sort({
       createdAt: -1,
     });
@@ -102,6 +102,7 @@ router.get("/", authenticateToken, async (req, res) => {
     res.status(500).json({ message: "Failed to load internships" });
   }
 });
+
 
 // TOGGLE internship status
 router.put("/:id/toggle-status", authenticateToken, async (req, res) => {
