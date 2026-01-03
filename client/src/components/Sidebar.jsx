@@ -33,9 +33,6 @@ const linkClass = ({ isActive }) =>
           <NavLink to="/dashboard" className={linkClass}>
             <FaTable /> Dashboard
           </NavLink>
-          <NavLink to="/internships" className={linkClass}>
-            <FaBriefcase /> Internships
-          </NavLink>
           <NavLink to="/profile" className={linkClass}>
             <FaUser /> Profile
           </NavLink>
@@ -56,6 +53,15 @@ const linkClass = ({ isActive }) =>
     <FaTable /> My Applications
   </NavLink>
 )}
+
+{/* STUDENT LINKS */}
+{!isAdmin && (
+  <NavLink to="/internships" className={linkClass}>
+    <FaBriefcase /> Internships
+  </NavLink>
+)}
+
+
 
 
           <button
