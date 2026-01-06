@@ -13,13 +13,13 @@ export default function AdminDashboard() {
   useEffect(() => {
     const load = async () => {
       const internships = await getInternships();
-      const applications = await getAdminApplications();
+      const applicationsRes = await getAdminApplications();
 
       setStats({
         total: internships.length,
         open: internships.filter(i => i.status === "open").length,
         closed: internships.filter(i => i.status === "closed").length,
-        applications: applications.length,
+        applications: applicationsRes.data.length,
       });
     };
 
