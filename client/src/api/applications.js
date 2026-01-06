@@ -1,36 +1,25 @@
-import axios from "../api/axios";
+import api from "./axios";
 
 // Student apply
 export const applyInternship = async (internshipId) => {
-  const res = await axios.post(`/applications/apply/${internshipId}`);
+  const res = await api.post(`/applications/apply/${internshipId}`);
   return res.data;
 };
 
 // Student view own applications
 export const getMyApplications = async () => {
-  const res = await axios.get("/applications/my");
+  const res = await api.get("/applications/my");
   return res.data;
 };
 
-export const getAdminApplications = () =>
-  axios.get("/applications/admin");
-
-
-// Admin view all applications
-export const getAllApplications = async (internshipId) => {
-  const res = await axios.get(
-    internshipId
-      ? `/applications/admin?internship=${internshipId}`
-      : "/applications/admin"
-  );
+// ✅ SINGLE admin fetch function (FILTERABLE)
+export const getAdminApplications = async (params = {}) => {
+  const res = await api.get("/applications/admin", { params });
   return res.data;
 };
 
-
-
+// Admin update status
 export const updateApplicationStatus = async (id, status) => {
-  const res = await axios.put(`/applications/${id}/status`, { status });
+  const res = await api.put(`/applications/${id}/status`, { status });
   return res.data;
 };
-
-

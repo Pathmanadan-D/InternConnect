@@ -72,6 +72,10 @@ router.get("/admin", authenticateToken, async (req, res) => {
       filter.internship = req.query.internship;
     }
 
+    if (req.query.status) {
+      filter.status = req.query.status;
+    }
+
     const applications = await Application.find(filter)
       .populate("student", "name email resume")
       .populate("internship", "title company")

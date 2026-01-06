@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getInternships } from "../../api/internships";
 import { getMyApplications } from "../../api/applications";
+import { useAuth } from "../../context/AuthContext";
+
 
 export default function StudentDashboard() {
   const [stats, setStats] = useState({
@@ -8,7 +10,11 @@ export default function StudentDashboard() {
     applied: 0,
   });
 
+  const { isAuthenticated } = useAuth();
+
+
   useEffect(() => {
+    if (!isAuthenticated) return;
     const load = async () => {
       const internships = await getInternships();
       const applications = await getMyApplications();

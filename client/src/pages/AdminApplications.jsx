@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import {
-  getAllApplications,
+  getAdminApplications,
   updateApplicationStatus,
 } from "../api/applications";
 import { motion } from "framer-motion";
@@ -32,20 +32,26 @@ const statusStyle = {
 
 export default function AdminApplications() {
   const [apps, setApps] = useState([]);
+  const [status, setStatus] = useState("");
 
   const [params] = useSearchParams();
   const internshipId = params.get("internship"); // ✅ FIRST
 
   const load = async () => {
-    const data = await getAllApplications(internshipId);
+    const data = await getAdminApplications({
+      internship: internshipId || undefined,
+      status: status || undefined,
+    });
     setApps(data);
-  };
+  };  
+  
   
 
   useEffect(() => {
     load();
-  }, [internshipId]);
+  }, [internshipId, status]);
   
+
 
   const updateStatus = async (id, status) => {
     await updateApplicationStatus(id, status);
@@ -57,6 +63,21 @@ export default function AdminApplications() {
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold">Applications</h2>
+
+      <div className="flex gap-3 items-center">
+  <label className="text-sm font-medium">Status:</label>
+  <select
+    value={status}
+    onChange={(e) => setStatus(e.target.value)}
+    className="border rounded px-3 py-2 text-sm"
+  >
+    <option value="">All</option>
+    <option value="pending">Pending</option>
+    <option value="approved">Approved</option>
+    <option value="rejected">Rejected</option>
+  </select>
+</div>
+
 
       <div className="overflow-x-auto bg-white border rounded-xl">
         <table className="w-full text-sm">
