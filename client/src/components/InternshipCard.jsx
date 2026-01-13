@@ -7,6 +7,10 @@ import {
   FaClock,
   FaMoneyBillWave,
 } from "react-icons/fa";
+import { calculateProfileCompletion } from "../utils/profileCompletion";
+
+
+
 
 export default function InternshipCard({
   internship,
@@ -14,9 +18,12 @@ export default function InternshipCard({
   onEdit,
   onDelete,
 }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [applied, setApplied] = useState(false);
+  const completion = calculateProfileCompletion(user || {});
+
+
 
   const handleApply = async () => {
     if (!isAuthenticated) {
@@ -94,25 +101,44 @@ export default function InternshipCard({
       )}
 
       {/* STUDENT APPLY */}
-      {!isAdmin && (
+{!isAdmin && (
   internship.status === "open" ? (
-    <button
-      onClick={handleApply}
-      disabled={loading || applied}
-      className={`w-full mt-2 py-2 rounded-lg text-white text-sm transition
-        ${
-          applied
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-purple-600 hover:bg-purple-700"
-        }
-      `}
-    >
-      {applied
-        ? "Applied"
-        : loading
-        ? "Applying..."
-        : "Apply"}
-    </button>
+    <>
+      {completion < 60 && (
+        <button
+          disabled
+          className="w-full mt-2 py-2 rounded-lg bg-gray-300 text-gray-600 text-sm cursor-not-allowed"
+        >
+          Complete profile to apply
+        </button>
+      )}
+
+      {completion >= 60 && completion < 100 && (
+        <button
+          onClick={handleApply}
+          disabled={loading || applied}
+          className="w-full mt-2 py-2 rounded-lg bg-yellow-500 text-white text-sm hover:bg-yellow-600"
+        >
+          {applied ? "Applied" : "Apply (Profile incomplete)"}
+        </button>
+      )}
+
+      {completion === 100 && (
+        <button
+          onClick={handleApply}
+          disabled={loading || applied}
+          className={`w-full mt-2 py-2 rounded-lg text-white text-sm transition
+            ${
+              applied
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-purple-600 hover:bg-purple-700"
+            }
+          `}
+        >
+          {applied ? "Applied" : "Apply"}
+        </button>
+      )}
+    </>
   ) : (
     <button
       disabled
@@ -122,6 +148,7 @@ export default function InternshipCard({
     </button>
   )
 )}
+
 
     </motion.div>
   );

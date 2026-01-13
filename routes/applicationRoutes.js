@@ -21,9 +21,24 @@ router.post("/apply/:internshipId", authenticateToken, async (req, res) => {
     }
 
     const user = await User.findById(req.user.id);
-    if (!user.resume) {
-      return res.status(400).json({ message: "Upload resume first" });
-    }
+
+const requiredFields = [
+  user.name,
+  user.email,
+  user.course,
+  user.year,
+  user.resume,
+];
+
+const completion =
+  (requiredFields.filter(Boolean).length / requiredFields.length) * 100;
+
+if (completion < 60) {
+  return res.status(400).json({
+    message: "Complete your profile before applying",
+  });
+}
+
 
     const alreadyApplied = await Application.findOne({
       student: req.user.id,
