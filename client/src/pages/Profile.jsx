@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { getProfile, uploadResume } from "../api/profile";
 import { useAuth } from "../context/AuthContext";
+import ProfileDetails from "../components/ProfileDetails";
+import { calculateProfileCompletion } from "../utils/profileCompletion";
+
 
 export default function Profile() {
   const { user } = useAuth();
@@ -8,6 +11,7 @@ export default function Profile() {
   const [resumeFile, setResumeFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  
 
   useEffect(() => {
     loadProfile();
@@ -44,18 +48,8 @@ export default function Profile() {
     return <p className="p-6">Loading profile...</p>;
   }
 
-  // Profile completion (simple & effective)
-  const completionFields = [
-    profile.name,
-    profile.email,
-    profile.course,
-    profile.year,
-    profile.resume,
-  ];
-  const completion =
-    Math.round(
-      (completionFields.filter(Boolean).length / completionFields.length) * 100
-    );
+  const completion = calculateProfileCompletion(profile);
+
 
   return (
     <div className="grid md:grid-cols-3 gap-6">
@@ -97,6 +91,15 @@ export default function Profile() {
           <p className="text-xs text-gray-500 mt-1">{completion}% complete</p>
         </div>
       </div>
+
+      {/* ✅ ADD HERE */}
+      <div className="md:col-span-3">
+  <ProfileDetails
+    profile={profile}
+    onUpdated={loadProfile}
+  />
+</div>
+
 
       {/* RIGHT — RESUME */}
       <div className="md:col-span-2 bg-white border rounded-2xl p-6 space-y-4">

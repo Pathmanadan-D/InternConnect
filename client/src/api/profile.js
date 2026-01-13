@@ -6,6 +6,12 @@ export const getProfile = async () => {
   return res.data;
 };
 
+export const updateProfile = async (data) => {
+  const res = await axios.put("/profile", data);
+  return res.data;
+};
+
+
 // Upload resume (PDF)
 export const uploadResume = async (file) => {
   const formData = new FormData();

@@ -1,10 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/User");
-const { authenticateToken } = require("../middleware/authMiddleware");
-const upload = require("../middleware/resumeUpload");
 
-// Get logged-in user profile
+const User = require("../models/User");
+const upload = require("../middleware/resumeUpload");
+const { authenticateToken } = require("../middleware/authMiddleware");
+const { updateProfile } = require("../controllers/profileController");
+
+// 🔐 GET logged-in user profile
 router.get("/", authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
@@ -14,7 +16,10 @@ router.get("/", authenticateToken, async (req, res) => {
   }
 });
 
-// Upload resume
+// 🔐 UPDATE profile details
+router.put("/", authenticateToken, updateProfile);
+
+// 🔐 UPLOAD resume
 router.post(
   "/resume",
   authenticateToken,

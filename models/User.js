@@ -15,13 +15,42 @@ const userSchema = new mongoose.Schema(
     },
 
     // PROFILE FIELDS (NEW)
-    course: { type: String, default: "" },
-    year: { type: String, default: "" },
+    course: {
+      type: String,
+      default: "",
+    },
+    
+    year: {
+      type: String,
+      default: "",
+    },
+    
+    phone: {
+      type: String,
+      default: "",
+    },
+    
+    location: {
+      type: String,
+      default: "",
+    },
+    
+    skills: {
+      type: [String],
+      default: [],
+    },
+    
+    about: {
+      type: String,
+      default: "",
+    },
+    
 
     // RESUME FILE (NEW)
     resume: { type: String, default: "" }
   },
   { timestamps: true }
+
 );
 
 module.exports = mongoose.model("User", userSchema);
