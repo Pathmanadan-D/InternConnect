@@ -23,15 +23,24 @@ export default function ProfileDetails({ profile, onUpdated }) {
     try {
       setLoading(true);
       setError("");
-
-      await updateProfile(form);
-      onUpdated(); // reload profile in parent
+  
+      const payload = {
+        ...form,
+        skills: form.skills
+          .split(",")
+          .map(s => s.trim())
+          .filter(Boolean),
+      };
+  
+      await updateProfile(payload);
+      onUpdated();
     } catch (err) {
       setError("Failed to save profile");
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="space-y-4">

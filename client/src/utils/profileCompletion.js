@@ -1,18 +1,20 @@
 export function calculateProfileCompletion(user) {
-    let completion = 40; // base (name + email)
-  
-    if (user.resume) completion += 20;
-  
-    const fields = [
-      user.phone,
-      user.location,
-      user.education,
-      user.skills,
-    ];
-  
-    const filledCount = fields.filter(Boolean).length;
-    completion += filledCount * 10;
-  
-    return Math.min(completion, 100);
-  }
-  
+  if (!user) return 0;
+
+  const requiredFields = [
+    user.name,
+    user.email,
+    user.course,
+    user.year,
+    user.phone,
+    user.location,
+    user.about,
+    user.skills && user.skills.length > 0,
+    user.resume,
+  ];
+
+  const filled = requiredFields.filter(Boolean).length;
+  const total = requiredFields.length;
+
+  return Math.round((filled / total) * 100);
+}
