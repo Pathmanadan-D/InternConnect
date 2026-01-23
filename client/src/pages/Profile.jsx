@@ -6,7 +6,7 @@ import { calculateProfileCompletion } from "../utils/profileCompletion";
 
 
 export default function Profile() {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [profile, setProfile] = useState(null);
   const [resumeFile, setResumeFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -21,10 +21,12 @@ export default function Profile() {
     try {
       const data = await getProfile();
       setProfile(data);
+      updateUser(data); // ✅ SYNC AUTH CONTEXT
     } catch (err) {
       console.error("Profile load failed:", err);
     }
   };
+  
 
   const handleUpload = async (e) => {
     e.preventDefault();
