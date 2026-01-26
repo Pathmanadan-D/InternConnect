@@ -52,6 +52,32 @@ export default function Profile() {
 
   const completion = calculateProfileCompletion(profile);
 
+  const profileChecklist = [
+    {
+      label: "Resume uploaded",
+      completed: Boolean(profile.resume),
+    },
+    {
+      label: "Course & year",
+      completed: Boolean(profile.course && profile.year),
+    },
+    {
+      label: "Phone",
+      completed: Boolean(profile.phone),
+    },
+    {
+      label: "Location",
+      completed: Boolean(profile.location),
+    },
+    {
+      label: "Skills",
+      completed: Array.isArray(profile.skills)
+        ? profile.skills.length > 0
+        : Boolean(profile.skills),
+    },
+  ];
+  
+
 
   return (
     <div className="grid md:grid-cols-3 gap-6">
@@ -84,6 +110,23 @@ export default function Profile() {
         {/* PROFILE COMPLETION */}
         <div>
           <p className="text-sm font-medium mb-1">Profile Completion</p>
+
+{/* PROFILE CHECKLIST */}
+<div className="mt-3 space-y-1">
+  {profileChecklist.map((item) => (
+    <div
+      key={item.label}
+      className={`text-xs flex items-center gap-2 ${
+        item.completed ? "text-green-600" : "text-red-600"
+      }`}
+    >
+      <span>{item.completed ? "✔" : "✖"}</span>
+      <span>{item.label}</span>
+    </div>
+  ))}
+</div>
+
+
           <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
             <div
               className="h-full bg-purple-600"
